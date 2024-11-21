@@ -36,7 +36,7 @@ public class Hook extends BaseUtil{
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--headless");
         System.setProperty("webdriver.chrome.driver", "C:\\Libs\\chromedriver.exe");
-        base.Driver = new ChromeDriver(chromeOptions);
+        base.Driver = new ChromeDriver();
     }
 
 

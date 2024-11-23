@@ -82,6 +82,16 @@
             <artifactId>cucumber-junit</artifactId>
             <version>6.9.1</version>
         </dependency>
+	    <dependency>
+    		<groupId>org.seleniumhq.selenium</groupId>
+   		 <artifactId>selenium-devtools-v131</artifactId>
+    		<version>4.10.0</version>
+	</dependency>
+	    <dependency>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-simple</artifactId>
+    		<version>1.7.36</version>
+	</dependency>
 
         <!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-picocontainer -->
         <dependency>

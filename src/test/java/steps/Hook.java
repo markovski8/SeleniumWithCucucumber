@@ -3,57 +3,90 @@ package steps;
 import Base.BaseUtil;
 import io.cucumber.java.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 
+/**
+ * Hook class handles global setup and teardown for the test scenarios.
+ * It initializes the WebDriver and ensures the browser is closed after execution.
+ */
 public class Hook extends BaseUtil {
 
-    private BaseUtil base;
+    private final BaseUtil base;
 
+    // Constructor to initialize BaseUtil
     public Hook(BaseUtil base) {
         this.base = base;
     }
 
+    /**
+     * Runs before each scenario to set up the WebDriver and prepare the test environment.
+     * 
+     * @param scenario The current test scenario.
+     */
     @Before
     public void InitializeTest(Scenario scenario) {
-        // Set up the test
+        // Log the scenario being executed
+        System.out.println("Initializing Scenario: " + scenario.getName());
+
+        // Attach scenario name to the test report (if supported in your framework)
         base.scenarioDef = base.features.createNode(scenario.getName());
 
-        // WebDriver setup
+        // Set up WebDriverManager for Chrome
         WebDriverManager.chromedriver().setup();
+
+        // Configure ChromeOptions for headless execution
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless"); // Add more options if necessary
+        chromeOptions.addArguments("--headless"); // Runs the browser in headless mode
+        chromeOptions.addArguments("--disable-gpu"); // Disables GPU acceleration (useful for CI pipelines)
+        chromeOptions.addArguments("--window-size=1920,1080"); // Ensures proper resolution for headless mode
+
+        // Initialize WebDriver with ChromeDriver
         base.Driver = new ChromeDriver(chromeOptions);
 
-        // Set an implicit wait for the WebDriver
+        // Set global implicit wait
         base.Driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+        // Log WebDriver initialization
+        System.out.println("WebDriver initialized successfully");
     }
 
+    /**
+     * Runs after each scenario to perform cleanup actions such as closing the browser.
+     * 
+     * @param scenario The current test scenario.
+     */
     @After
     public void TearDownTest(Scenario scenario) {
+        // If the scenario fails, log it
         if (scenario.isFailed()) {
-            // Take screenshot logic (placeholder)
             System.out.println("Scenario failed: " + scenario.getName());
+            // You can add screenshot capture logic here
         }
 
-        // Close the browser
+        // Log and close the browser
         System.out.println("Closing the browser");
         if (base.Driver != null) {
             base.Driver.quit();
         }
     }
 
+    /**
+     * Executes before every step in the scenario.
+     * 
+     * @param scenario The current test scenario.
+     */
     @BeforeStep
     public void BeforeEveryStep(Scenario scenario) {
-        System.out.println("Before every step: " + scenario.getId());
+        System.out.println("Before step: " + scenario.getId());
     }
 
+    /**
+     * Executes after every step in the scenario.
+     * 
+     * @param scenario The current test scenario.
+     */
     @AfterStep
     public void AfterEveryStep(Scenario scenario) {
-        System.out.println("After every step: " + scenario.getId());
-    }
-}
+      

@@ -1,27 +1,16 @@
 package steps;
 
 import Base.BaseUtil;
-
-
-//import cucumber.api.PickleStepTestStep;
-//import cucumber.api.TestCase;
-//import gherkin.pickles.PickleStep;
-//import io.cucumber.core.api.Scenario;
-
-
 import io.cucumber.java.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.checkerframework.checker.units.qual.C;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 
-/**
- * Created by Karthik on 31/01/2019.
- */
-
-public class Hook extends BaseUtil{
+public class Hook extends BaseUtil {
 
     private BaseUtil base;
 
@@ -31,33 +20,40 @@ public class Hook extends BaseUtil{
 
     @Before
     public void InitializeTest(Scenario scenario) {
+        // Set up the test
         base.scenarioDef = base.features.createNode(scenario.getName());
+
+        // WebDriver setup
         WebDriverManager.chromedriver().setup();
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless");
-        System.setProperty("webdriver.chrome.driver", "C:\\Libs\\chromedriver.exe");
-        base.Driver = new ChromeDriver();
-    }
+        chromeOptions.addArguments("--headless"); // Add more options if necessary
+        base.Driver = new ChromeDriver(chromeOptions);
 
+        // Set an implicit wait for the WebDriver
+        base.Driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+    }
 
     @After
     public void TearDownTest(Scenario scenario) {
         if (scenario.isFailed()) {
-            //Take screenshot logic goes here
-            System.out.println(scenario.getName());
+            // Take screenshot logic (placeholder)
+            System.out.println("Scenario failed: " + scenario.getName());
         }
-        System.out.println("Closing the browser : MOCK");
-        base.Driver.quit();
+
+        // Close the browser
+        System.out.println("Closing the browser");
+        if (base.Driver != null) {
+            base.Driver.quit();
+        }
     }
 
     @BeforeStep
     public void BeforeEveryStep(Scenario scenario) {
-        System.out.println("Before every step " + scenario.getId());
+        System.out.println("Before every step: " + scenario.getId());
     }
 
     @AfterStep
-    public void AfterEveryStep(Scenario scenario) throws NoSuchFieldException, IllegalAccessException {
-        //System.out.println("Before every step " + stepTestStep.getId());
+    public void AfterEveryStep(Scenario scenario) {
+        System.out.println("After every step: " + scenario.getId());
     }
-
 }

@@ -89,4 +89,6 @@ public class Hook extends BaseUtil {
      */
     @AfterStep
     public void AfterEveryStep(Scenario scenario) {
-      
+        System.out.println("After step: " + scenario.getId());
+    }
+}
